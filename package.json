@@ -1,0 +1,16 @@
+{
+  "name": "shopify-product-import",
+  "version": "1.0.0",
+  "description": "Import Shopify products/variants into PostgreSQL via the Admin GraphQL API",
+  "main": "import.js",
+  "scripts": {
+    "import": "node import.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.13.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
