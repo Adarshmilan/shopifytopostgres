@@ -159,8 +159,6 @@ async function shopifyGraphQL(query, variables, retries = 3) {
 
     const json = await response.json();
 
-    // GraphQL-level throttling comes back as an error with code THROTTLED,
-    // not an HTTP status. Back off using the point bucket's restore rate.
     const throttled = json.errors?.some((e) => e.extensions?.code === 'THROTTLED');
     if (throttled) {
       const status = json.extensions?.cost?.throttleStatus;
@@ -173,7 +171,6 @@ async function shopifyGraphQL(query, variables, retries = 3) {
       throw new Error(`GraphQL error: ${JSON.stringify(json.errors)}`);
     }
 
-    // Proactively slow down if we're close to exhausting the point bucket.
     const cost = json.extensions?.cost?.throttleStatus;
     if (cost && cost.currentlyAvailable / cost.maximumAvailable < 0.2) {
       await sleep(1000);
@@ -260,8 +257,7 @@ async function upsertVariant(client, row, productId) {
 async function importProduct(stats, node) {
   const productRow = toProductRow(node);
 
-  // A record with no usable Shopify ID can't be upserted (it's our unique
-  // key) — skip it rather than letting it fail as a DB error.
+
   if (!productRow.shopify_product_id) {
     stats.recordsSkipped++;
     console.warn(`  Skipped product with missing/invalid id: ${JSON.stringify(node.title ?? node)}`);
