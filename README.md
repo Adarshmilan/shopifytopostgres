@@ -58,7 +58,7 @@ providers' default certificates).
 ## 4. Command to Run the Importer
 
 ```bash
-node import-shopify.js
+node import.js
 ```
 
 The script validates required env vars, ensures the schema exists, then
